@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "777105913510",
+    "firebase_url": "https://cvcv-bc6f0-default-rtdb.firebaseio.com",
+    "project_id": "cvcv-bc6f0",
+    "storage_bucket": "cvcv-bc6f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777105913510:android:5586adbd907d70c53c6667",
+        "android_client_info": {
+          "package_name": "com.example.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxzN1U5VCaF1PEbET9H4iArUowRMzcCfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777105913510:android:11d265b20ecdd4c83c6667",
+        "android_client_info": {
+          "package_name": "com.example.ecommerce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxzN1U5VCaF1PEbET9H4iArUowRMzcCfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777105913510:android:2547196fe400b30e3c6667",
+        "android_client_info": {
+          "package_name": "com.example.grabit_ecommerce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxzN1U5VCaF1PEbET9H4iArUowRMzcCfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
