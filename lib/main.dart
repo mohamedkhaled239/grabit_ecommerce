@@ -8,11 +8,15 @@ import 'package:grabit_ecommerce/features/auth/model/auth_model.dart';
 import 'package:grabit_ecommerce/features/auth/model/register_model.dart';
 import 'package:grabit_ecommerce/features/auth/view/login_page.dart';
 import 'package:grabit_ecommerce/features/auth/view/register_page.dart';
+import 'package:grabit_ecommerce/features/cart/view/cart_screen.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_controller.dart';
 import 'package:grabit_ecommerce/features/home/model/home_model.dart';
 import 'package:grabit_ecommerce/features/home/view/home_page.dart';
 import 'package:grabit_ecommerce/features/home/view/least_arrival_widget.dart';
 import 'package:grabit_ecommerce/features/root_screen.dart';
+import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
+import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +37,19 @@ class MyApp extends StatelessWidget {
           create: (context) => HomeController(HomeModel()),
           child: const LeastArrivalWidget(),
         ),
+        BlocProvider(
+          create:
+              (context) => CartCubit(
+                FirebaseAuth.instance.currentUser?.uid ?? '',
+              ), // pass the current user ID
+          child: CartScreen(),
+        ),
+        BlocProvider(
+          create: (_) {
+            final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+            return WishlistCubit(userId)..loadWishlist();
+          },
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -40,8 +57,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: const AuthWrapper(),
+        initialRoute: '/',
         routes: {
+          '/': (context) => const AuthWrapper(),
           '/login': (context) => const LoginPage(),
           '/register': (context) => const RegisterScreen(),
           '/home': (context) => const HomePage(),

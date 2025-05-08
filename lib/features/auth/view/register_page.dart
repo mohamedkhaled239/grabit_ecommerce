@@ -42,7 +42,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         body: BlocListener<RegisterController, RegisterState>(
           listener: (context, state) {
             if (state is RegisterSuccess) {
-              Navigator.pop(context);
+              Navigator.of(
+                context,
+              ).pushNamedAndRemoveUntil('/root', (route) => false);
             } else if (state is RegisterFailure) {
               ScaffoldMessenger.of(
                 context,
