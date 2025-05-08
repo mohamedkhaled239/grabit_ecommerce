@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grabit_ecommerce/features/home/view/home_page.dart';
+import 'package:grabit_ecommerce/features/cart/view/cart_screen.dart';
+import 'package:grabit_ecommerce/features/wishlist/view/wishlist_screen.dart';
+import 'package:grabit_ecommerce/features/profile/view/profile_screen.dart';
 import 'package:iconly/iconly.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -34,7 +37,12 @@ class _RootScreenState extends State<RootScreen> {
             body: PageView(
               controller: controller,
               physics: const NeverScrollableScrollPhysics(),
-              children: const [HomePage(), HomePage(), HomePage(), HomePage()],
+              children: const [
+                HomePage(),
+                WishlistScreen(),
+                CartScreen(),
+                ProfileScreen(),
+              ],
             ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: currentScreen,

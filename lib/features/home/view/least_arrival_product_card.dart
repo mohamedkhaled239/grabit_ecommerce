@@ -1,10 +1,14 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:grabit_ecommerce/features/home/products/model/product_model.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
+import 'package:grabit_ecommerce/features/cart/model/cart_item_model.dart';
+import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
+import 'package:grabit_ecommerce/features/wishlist/model/wishlist_item_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LeastArrivalProductCard extends StatelessWidget {
   final Product product;
@@ -38,7 +42,7 @@ class LeastArrivalProductCard extends StatelessWidget {
               SizedBox(height: 2.h),
               Divider(color: Colors.black, thickness: 0.5),
 
-              _buildProductCategory(),
+              _buildProductCategory(context),
               SizedBox(height: 1.h),
               _buildProductTitle(),
               SizedBox(height: 1.h),
@@ -77,7 +81,7 @@ class LeastArrivalProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCategory() {
+  Widget _buildProductCategory(BuildContext context) {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -90,51 +94,65 @@ class LeastArrivalProductCard extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          // add image svg
-          SizedBox(width: 1.w),
           Row(
             children: [
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  width: 35,
-                  height: 35,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: const Color.fromARGB(255, 255, 253, 253),
-                    //shawod
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: SvgPicture.asset(
-                        'assets/images/wishlist.svg',
-                        color: Colors.black.withOpacity(0.5),
-                        placeholderBuilder:
-                            (BuildContext context) => Container(
-                              width: 12,
-                              height: 12,
-                              color: Colors.grey[300],
-                            ),
-                      ),
+              BlocBuilder<WishlistCubit, WishlistState>(
+                builder: (context, state) {
+                  bool isInWishlist = false;
+                  if (state is WishlistLoaded) {
+                    isInWishlist = state.items.any(
+                      (item) => item.id == product.id,
+                    );
+                  }
+                  return IconButton(
+                    icon: Icon(
+                      Icons.favorite,
+                      color: isInWishlist ? Colors.red : Colors.grey,
                     ),
-                  ),
-                ),
+                    onPressed:
+                        isInWishlist
+                            ? () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Already exists')),
+                              );
+                            }
+                            : () {
+                              final wishlistCubit =
+                                  BlocProvider.of<WishlistCubit>(
+                                    context,
+                                    listen: false,
+                                  );
+                              final userId =
+                                  FirebaseAuth.instance.currentUser?.uid ?? '';
+                              final wishlistItem = WishlistItem(
+                                id: product.id,
+                                name: product.title.en,
+                                imageUrl: product.mainImage,
+                                price: product.price,
+                              );
+                              wishlistCubit.addToWishlist(wishlistItem);
+                            },
+                  );
+                },
               ),
-
               const SizedBox(width: 5),
               InkWell(
                 onTap: () {
-                  log("add to cart");
+                  // إضافة المنتج للسلة
+                  final cartItem = CartItem(
+                    id: product.id,
+                    productId: product.productId,
+                    name: product.title.en,
+                    imageUrl: product.mainImage,
+                    price: product.price,
+                    quantity: 1,
+                    categoryName: product.categoryName,
+                  );
+                  context.read<CartCubit>().addToCart(cartItem);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Added to cart!')),
+                  );
                 },
                 child: Container(
                   width: 35,
@@ -142,7 +160,6 @@ class LeastArrivalProductCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: const Color.fromARGB(255, 255, 253, 253),
-                    //shawod
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.2),
