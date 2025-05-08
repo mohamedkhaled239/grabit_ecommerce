@@ -8,6 +8,11 @@ import 'package:grabit_ecommerce/features/auth/model/auth_model.dart';
 import 'package:grabit_ecommerce/features/auth/model/register_model.dart';
 import 'package:grabit_ecommerce/features/auth/view/login_page.dart';
 import 'package:grabit_ecommerce/features/auth/view/register_page.dart';
+import 'package:grabit_ecommerce/features/home/controller/home_controller.dart';
+import 'package:grabit_ecommerce/features/home/model/home_model.dart';
+import 'package:grabit_ecommerce/features/home/view/home_page.dart';
+import 'package:grabit_ecommerce/features/home/view/least_arrival_widget.dart';
+import 'package:grabit_ecommerce/features/root_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +29,10 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => AuthController(AuthModel())),
         BlocProvider(create: (context) => RegisterController(RegisterModel())),
+        BlocProvider(
+          create: (context) => HomeController(HomeModel()),
+          child: const LeastArrivalWidget(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -31,10 +40,12 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: const AuthWrapper(), // Set AuthWrapper as the home
+        home: const AuthWrapper(),
         routes: {
           '/login': (context) => const LoginPage(),
           '/register': (context) => const RegisterScreen(),
+          '/home': (context) => const HomePage(),
+          '/root': (context) => const RootScreen(),
         },
       ),
     );
@@ -49,7 +60,7 @@ class AuthWrapper extends StatelessWidget {
     return BlocBuilder<AuthController, AuthState>(
       builder: (context, state) {
         if (state is AuthSuccess) {
-          return const Placeholder(); // Replace with your home screen
+          return const RootScreen();
         }
         return const LoginPage();
       },
