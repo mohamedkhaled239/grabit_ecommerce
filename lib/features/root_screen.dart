@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
 import 'package:grabit_ecommerce/features/home/view/home_page.dart';
 import 'package:grabit_ecommerce/features/cart/view/cart_screen.dart';
 import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
@@ -45,7 +47,11 @@ class _RootScreenState extends State<RootScreen> {
                   create: (_) => WishlistCubit.createWithCurrentUser(),
                   child: const WishlistScreen(),
                 ),
-                const CartScreen(),
+                BlocProvider(
+                  create:
+                      (_) => CartCubit(FirebaseAuth.instance.currentUser!.uid),
+                  child: CartScreen(),
+                ),
                 const ProfileScreen(),
               ],
             ),

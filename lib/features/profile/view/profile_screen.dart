@@ -109,8 +109,7 @@ class ProfileScreen extends StatelessWidget {
                           ),
                           icon: const Icon(Icons.logout),
                           label: const Text('Logout'),
-                          onPressed:
-                              () => _logout(context), // ← Call logout method
+                          onPressed: () => _logout(context),
                         ),
                       ),
                     ],

@@ -87,7 +87,6 @@ class Product {
   factory Product.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
-    // Safely parse localized strings
     final titleMap =
         data['title'] is Map ? data['title'] as Map<String, dynamic> : {};
     final descriptionMap =
