@@ -17,9 +17,9 @@ class CartCubit extends Cubit<CartState> {
 
       final snapshot =
           await _firestore
-              .collection('carts')
+              .collection('users')
               .doc(userId)
-              .collection('items')
+              .collection('cart')
               .get();
 
       final items =
@@ -34,9 +34,9 @@ class CartCubit extends Cubit<CartState> {
   Future<void> addToCart(CartItem item) async {
     try {
       await _firestore
-          .collection('carts')
+          .collection('users')
           .doc(userId)
-          .collection('items')
+          .collection('cart')
           .doc(item.id)
           .set(item.toMap());
 
@@ -49,9 +49,9 @@ class CartCubit extends Cubit<CartState> {
   Future<void> removeFromCart(String itemId) async {
     try {
       await _firestore
-          .collection('carts')
+          .collection('users')
           .doc(userId)
-          .collection('items')
+          .collection('cart')
           .doc(itemId)
           .delete();
 
@@ -64,9 +64,9 @@ class CartCubit extends Cubit<CartState> {
   Future<void> updateQuantity(String itemId, int newQuantity) async {
     try {
       await _firestore
-          .collection('carts')
+          .collection('users')
           .doc(userId)
-          .collection('items')
+          .collection('cart')
           .doc(itemId)
           .update({'quantity': newQuantity});
 

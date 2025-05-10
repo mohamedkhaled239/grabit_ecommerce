@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/features/home/view/home_page.dart';
 import 'package:grabit_ecommerce/features/cart/view/cart_screen.dart';
+import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
 import 'package:grabit_ecommerce/features/wishlist/view/wishlist_screen.dart';
 import 'package:grabit_ecommerce/features/profile/view/profile_screen.dart';
 import 'package:iconly/iconly.dart';
@@ -37,11 +39,14 @@ class _RootScreenState extends State<RootScreen> {
             body: PageView(
               controller: controller,
               physics: const NeverScrollableScrollPhysics(),
-              children: const [
-                HomePage(),
-                WishlistScreen(),
-                CartScreen(),
-                ProfileScreen(),
+              children: [
+                const HomePage(),
+                BlocProvider(
+                  create: (_) => WishlistCubit.createWithCurrentUser(),
+                  child: const WishlistScreen(),
+                ),
+                const CartScreen(),
+                const ProfileScreen(),
               ],
             ),
             bottomNavigationBar: BottomNavigationBar(

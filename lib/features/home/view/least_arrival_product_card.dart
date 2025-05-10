@@ -138,7 +138,6 @@ class LeastArrivalProductCard extends StatelessWidget {
               const SizedBox(width: 5),
               InkWell(
                 onTap: () {
-                  // إضافة المنتج للسلة
                   final cartItem = CartItem(
                     id: product.id,
                     productId: product.productId,

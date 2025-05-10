@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/core/widgets/custom_button.dart';
 import 'package:grabit_ecommerce/core/widgets/custom_text_field.dart';
 import 'package:grabit_ecommerce/features/auth/controller/auth_controller.dart';
 import 'package:grabit_ecommerce/features/auth/controller/auth_state.dart';
+import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
 import 'package:grabit_ecommerce/features/root_screen.dart';
 
 class LoginPage extends StatefulWidget {
@@ -53,7 +55,19 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   }
                   if (state is AuthSuccess) {
-                    Navigator.pushNamed(context, '/root');
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => BlocProvider(
+                              create:
+                                  (_) => CartCubit(
+                                    FirebaseAuth.instance.currentUser!.uid,
+                                  ),
+                              child: RootScreen(),
+                            ),
+                      ),
+                    );
                   }
                 },
                 builder: (context, state) {

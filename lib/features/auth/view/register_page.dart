@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/core/widgets/custom_button.dart';
@@ -6,6 +7,8 @@ import 'package:grabit_ecommerce/core/widgets/custom_text_field.dart';
 import 'package:grabit_ecommerce/features/auth/controller/register_controller.dart';
 import 'package:grabit_ecommerce/features/auth/controller/register_state.dart';
 import 'package:grabit_ecommerce/features/auth/model/register_model.dart';
+import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
+import 'package:grabit_ecommerce/features/root_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -42,9 +45,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
         body: BlocListener<RegisterController, RegisterState>(
           listener: (context, state) {
             if (state is RegisterSuccess) {
-              Navigator.of(
+              Navigator.pushReplacement(
                 context,
-              ).pushNamedAndRemoveUntil('/root', (route) => false);
+                MaterialPageRoute(
+                  builder:
+                      (context) => BlocProvider(
+                        create:
+                            (_) => CartCubit(
+                              FirebaseAuth.instance.currentUser!.uid,
+                            ),
+                        child: RootScreen(),
+                      ),
+                ),
+              );
             } else if (state is RegisterFailure) {
               ScaffoldMessenger.of(
                 context,
