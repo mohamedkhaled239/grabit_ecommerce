@@ -4,7 +4,6 @@ import 'package:grabit_ecommerce/core/widgets/custom_button.dart';
 import 'package:grabit_ecommerce/core/widgets/custom_text_field.dart';
 import 'package:grabit_ecommerce/features/auth/controller/auth_controller.dart';
 import 'package:grabit_ecommerce/features/auth/controller/auth_state.dart';
-import 'package:grabit_ecommerce/features/root_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

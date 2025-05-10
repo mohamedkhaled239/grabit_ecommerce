@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../model/wishlist_item_model.dart';
 
 abstract class WishlistState {}
@@ -24,6 +25,14 @@ class WishlistCubit extends Cubit<WishlistState> {
 
   WishlistCubit(this.userId) : super(WishlistInitial()) {
     loadWishlist();
+  }
+
+  static WishlistCubit createWithCurrentUser() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception("User not logged in");
+    }
+    return WishlistCubit(user.uid);
   }
 
   Future<void> loadWishlist() async {
@@ -84,5 +93,9 @@ class WishlistCubit extends Cubit<WishlistState> {
     } catch (e) {
       emit(WishlistError(e.toString()));
     }
+  }
+
+  void clearWishlist() {
+    emit(WishlistLoaded([]));
   }
 }

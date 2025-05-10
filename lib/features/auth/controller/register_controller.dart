@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/features/auth/model/register_model.dart';
 import 'package:grabit_ecommerce/features/auth/controller/register_state.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterController extends Cubit<RegisterState> {
   final RegisterModel _registerModel;

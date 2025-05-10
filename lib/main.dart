@@ -38,10 +38,7 @@ class MyApp extends StatelessWidget {
           child: const LeastArrivalWidget(),
         ),
         BlocProvider(
-          create:
-              (context) => CartCubit(
-                FirebaseAuth.instance.currentUser?.uid ?? '',
-              ), // pass the current user ID
+          create: (_) => CartCubit(FirebaseAuth.instance.currentUser!.uid),
           child: CartScreen(),
         ),
         BlocProvider(

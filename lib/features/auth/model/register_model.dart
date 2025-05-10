@@ -16,10 +16,9 @@ class RegisterModel {
     required String password,
     String? phone,
     String? profileImagePath,
-    String role = 'user', // Default role
+    String role = 'user',
   }) async {
     try {
-      // 1. Create user in Firebase Auth
       UserCredential userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
 
@@ -27,13 +26,11 @@ class RegisterModel {
 
       final userId = userCredential.user!.uid;
 
-      // 2. Upload profile image if provided
       String? imageUrl;
       if (profileImagePath != null && profileImagePath.isNotEmpty) {
         imageUrl = await _uploadProfileImage(userId, profileImagePath);
       }
 
-      // 3. Create user document in Firestore
       await _firestore.collection('users').doc(userId).set({
         'userId': userId,
         'name': name,
@@ -48,7 +45,6 @@ class RegisterModel {
 
       return userCredential.user;
     } catch (e) {
-      // Clean up if any step fails
       if (e is FirebaseAuthException && e.code == 'email-already-in-use') {
         throw 'Email already in use';
       }
