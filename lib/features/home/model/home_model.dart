@@ -7,6 +7,15 @@ class HomeModel {
   final ProductService _productService = ProductService();
 
   Stream<List<Product>> getLatestProducts() {
-    return _productService.getProducts();
+    return _firestore
+        .collection('allproducts')
+        .orderBy('createdAt', descending: true)
+        .limit(20) // Limit the number of products for performance
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => Product.fromFirestore(doc))
+              .toList();
+        });
   }
 }

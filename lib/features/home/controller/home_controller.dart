@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeController extends Cubit<HomeState> {
   final HomeModel _model;
+  List<Product> _allProducts = [];
 
   HomeController(this._model) : super(HomeInitial()) {
     loadInitialData();
@@ -22,5 +23,15 @@ class HomeController extends Cubit<HomeState> {
 
   Stream<List<Product>> getLatestProducts() {
     return _model.getLatestProducts();
+  }
+
+  List<Product> searchProducts(String query) {
+    if (query.isEmpty) return [];
+
+    return _allProducts.where((product) {
+      final titleLower = product.title.en.toLowerCase();
+      final searchLower = query.toLowerCase();
+      return titleLower.contains(searchLower);
+    }).toList();
   }
 }

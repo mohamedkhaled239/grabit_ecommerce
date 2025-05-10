@@ -11,6 +11,7 @@ import 'package:grabit_ecommerce/features/auth/view/register_page.dart';
 import 'package:grabit_ecommerce/features/cart/view/cart_screen.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_controller.dart';
 import 'package:grabit_ecommerce/features/home/model/home_model.dart';
+import 'package:grabit_ecommerce/features/home/search/view/search_page.dart';
 import 'package:grabit_ecommerce/features/home/view/home_page.dart';
 import 'package:grabit_ecommerce/features/home/view/least_arrival_widget.dart';
 import 'package:grabit_ecommerce/features/root_screen.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const RegisterScreen(),
           '/home': (context) => const HomePage(),
           '/root': (context) => const RootScreen(),
+          '/search': (context) => const SearchPage(),
         },
       ),
     );
