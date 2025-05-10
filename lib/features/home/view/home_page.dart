@@ -3,13 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_controller.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_state.dart';
 import 'package:grabit_ecommerce/features/home/model/home_model.dart';
+import 'package:grabit_ecommerce/features/home/search/view/search_page.dart';
 import 'package:grabit_ecommerce/features/home/view/least_arrival_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -203,6 +204,7 @@ class CategoryItem extends StatelessWidget {
   }
 }
 
+// Update your existing SearchBar widget
 class SearchBar extends StatelessWidget {
   const SearchBar({Key? key}) : super(key: key);
 
@@ -211,7 +213,12 @@ class SearchBar extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(4.w),
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SearchPage()),
+          );
+        },
         child: Container(
           height: 7.h,
           decoration: BoxDecoration(
