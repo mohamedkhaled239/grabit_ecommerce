@@ -34,4 +34,16 @@ class HomeController extends Cubit<HomeState> {
       return titleLower.contains(searchLower);
     }).toList();
   }
+
+  Stream<List<Product>> getProductsByCategory(String categoryName) {
+    return _model.getLatestProducts().map((products) {
+      return products
+          .where(
+            (product) =>
+                product.categoryName.toLowerCase() ==
+                categoryName.toLowerCase(),
+          )
+          .toList();
+    });
+  }
 }
