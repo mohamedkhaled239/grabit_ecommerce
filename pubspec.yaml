@@ -50,6 +50,8 @@ dependencies:
   string_similarity: ^2.1.1
   card_swiper: ^3.0.1
   flutter_svg: ^2.1.0
+  flutter_html: ^3.0.0
+  html: ^0.15.6
 
 dev_dependencies:
   flutter_test:

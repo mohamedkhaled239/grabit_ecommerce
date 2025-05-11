@@ -9,6 +9,7 @@ import 'package:grabit_ecommerce/features/cart/model/cart_item_model.dart';
 import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
 import 'package:grabit_ecommerce/features/wishlist/model/wishlist_item_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grabit_ecommerce/features/home/view/product_details_page.dart';
 
 class LeastArrivalProductCard extends StatelessWidget {
   final Product product;
@@ -221,5 +222,12 @@ class LeastArrivalProductCard extends StatelessWidget {
     );
   }
 
-  void _navigateToProductDetails(BuildContext context) {}
+  void _navigateToProductDetails(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductDetailsPage(product: product),
+      ),
+    );
+  }
 }
