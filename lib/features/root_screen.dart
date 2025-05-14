@@ -7,6 +7,7 @@ import 'package:grabit_ecommerce/features/cart/view/cart_screen.dart';
 import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
 import 'package:grabit_ecommerce/features/wishlist/view/wishlist_screen.dart';
 import 'package:grabit_ecommerce/features/profile/view/profile_screen.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 import 'package:iconly/iconly.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -66,26 +67,26 @@ class _RootScreenState extends State<RootScreen> {
               type: BottomNavigationBarType.fixed,
               selectedItemColor: const Color(0xFF5CAF90),
               unselectedItemColor: Colors.grey,
-              items: const [
+              items: [
                 BottomNavigationBarItem(
                   icon: Icon(IconlyLight.home),
                   activeIcon: Icon(IconlyBold.home),
-                  label: "Home",
+                  label: S.of(context).Home,
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(IconlyLight.heart),
                   activeIcon: Icon(IconlyBold.heart),
-                  label: "Wishlist",
+                  label: S.of(context).Wishlist,
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(IconlyLight.bag),
                   activeIcon: Icon(IconlyBold.bag),
-                  label: "Cart",
+                  label: S.of(context).Cart,
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(IconlyLight.profile),
                   activeIcon: Icon(IconlyBold.profile),
-                  label: "Profile",
+                  label: S.of(context).Profile,
                 ),
               ],
             ),

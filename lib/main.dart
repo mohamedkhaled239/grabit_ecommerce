@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:grabit_ecommerce/features/auth/controller/auth_controller.dart';
 import 'package:grabit_ecommerce/features/auth/controller/auth_state.dart';
 import 'package:grabit_ecommerce/features/auth/controller/register_controller.dart';
@@ -18,6 +19,7 @@ import 'package:grabit_ecommerce/features/root_screen.dart';
 import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
 import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +52,15 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        locale: const Locale('en', 'US'),
+        localizationsDelegates: [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,

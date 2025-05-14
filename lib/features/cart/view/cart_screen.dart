@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/features/cart/controller/cart_state.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 import '../controller/cart_cubit.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({Key? key}) : super(key: key);
+  const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('My Cart')),
+      appBar: AppBar(title: Text(S.of(context).Cart)),
       body: BlocBuilder<CartCubit, CartState>(
         builder: (context, state) {
           if (state is CartLoading) {
@@ -19,7 +20,7 @@ class CartScreen extends StatelessWidget {
             final items = state.items;
 
             if (items.isEmpty) {
-              return const Center(child: Text('Your cart is empty'));
+              return Center(child: Text(S.of(context).Cart_is_empty));
             }
 
             return Column(
@@ -101,7 +102,7 @@ class CartScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                _buildSummary(cubit),
+                _buildSummary(cubit, context),
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Row(
@@ -109,7 +110,7 @@ class CartScreen extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {},
-                          child: const Text('VIEW CART'),
+                          child: Text(S.of(context).VIEW_CART),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -119,7 +120,7 @@ class CartScreen extends StatelessWidget {
                             backgroundColor: Colors.green,
                           ),
                           onPressed: () {},
-                          child: const Text('CHECKOUT'),
+                          child: Text(S.of(context).CHECKOUT),
                         ),
                       ),
                     ],
@@ -136,17 +137,17 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSummary(CartCubit cubit) {
+  Widget _buildSummary(CartCubit cubit, BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(16),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildSummaryRow('Subtotal:', cubit.subtotal),
-            _buildSummaryRow('VAT (20%):', cubit.vat),
+            _buildSummaryRow(S.of(context).Subtotal, cubit.subtotal),
+            _buildSummaryRow(S.of(context).VAT, cubit.vat),
             const Divider(),
-            _buildSummaryRow('Total:', cubit.total, isBold: true),
+            _buildSummaryRow((S.of(context).Total), cubit.total, isBold: true),
           ],
         ),
       ),

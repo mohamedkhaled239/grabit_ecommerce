@@ -6,6 +6,7 @@ import 'package:grabit_ecommerce/features/home/model/home_model.dart';
 import 'package:grabit_ecommerce/features/home/search/view/search_page.dart';
 import 'package:grabit_ecommerce/features/home/view/category_products_page.dart';
 import 'package:grabit_ecommerce/features/home/view/least_arrival_widget.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,16 +44,27 @@ class _HomePageContent extends StatelessWidget {
 
   const _HomePageContent({required this.customId});
 
-  final List<Map<String, dynamic>> categories = const [
-    {'title': 'Clothing', 'image': 'assets/images/bread.svg'},
-    {'title': 'Electronics', 'image': 'assets/images/corn.svg'},
-    {'title': 'Home & Kitchen', 'image': 'assets/images/hamburger-soda.svg'},
-    {'title': 'Snack & Spice', 'image': 'assets/images/french-fries.svg'},
-    {'title': 'Dairy & Milk', 'image': 'assets/images/coffee-pot.svg'},
-    {'title': 'Seafood', 'image': 'assets/images/shrimp.svg'},
-    {'title': 'Food', 'image': 'assets/images/popcorn.svg'},
-    {'title': 'Eggs', 'image': 'assets/images/egg.svg'},
-  ];
+  List<Map<String, dynamic>> getCategories(BuildContext context) {
+    return [
+      {'title': S.of(context).Clothing, 'image': 'assets/images/bread.svg'},
+      {'title': S.of(context).Electronics, 'image': 'assets/images/corn.svg'},
+      {
+        'title': S.of(context).Food,
+        'image': 'assets/images/hamburger-soda.svg',
+      },
+      {
+        'title': S.of(context).Snack_Spices,
+        'image': 'assets/images/french-fries.svg',
+      },
+      {
+        'title': S.of(context).Dairy_Milk,
+        'image': 'assets/images/coffee-pot.svg',
+      },
+      {'title': S.of(context).SeaFood, 'image': 'assets/images/shrimp.svg'},
+      {'title': S.of(context).Food, 'image': 'assets/images/popcorn.svg'},
+      {'title': S.of(context).Eggs, 'image': 'assets/images/egg.svg'},
+    ];
+  }
 
   // final List<Map<String, dynamic>> categories = const [
   //   {'title': 'Bakery', 'image': 'assets/images/bread.svg'},
@@ -77,26 +89,25 @@ class _HomePageContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SearchBar(),
-          _buildCategorySection(),
+          _buildCategorySection(context),
           _buildDealsSection(),
-          _buildLastArrivalSection(),
+          _buildLastArrivalSection(context),
         ],
       ),
     );
   }
 
-  Widget _buildCategorySection() {
+  Widget _buildCategorySection(BuildContext context) {
     return SizedBox(
       height: 13.h,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children:
-            categories
+            getCategories(context)
                 .map(
                   (category) => CategoryItem(
                     title: category['title'],
                     image: category['image'],
-                    onTap: () {},
                   ),
                 )
                 .toList(),
@@ -128,14 +139,14 @@ class _HomePageContent extends StatelessWidget {
     );
   }
 
-  Widget _buildLastArrivalSection() {
+  Widget _buildLastArrivalSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.only(left: 6.w),
-          child: const Text(
-            'Day of The Deals',
+          child: Text(
+            S.of(context).Day_of_The_Deals,
             style: TextStyle(
               fontSize: 19,
               fontWeight: FontWeight.bold,
@@ -170,14 +181,9 @@ class _BannerCard extends StatelessWidget {
 class CategoryItem extends StatelessWidget {
   final String title;
   final String image;
-  final VoidCallback onTap;
 
-  const CategoryItem({
-    Key? key,
-    required this.title,
-    required this.image,
-    required this.onTap,
-  }) : super(key: key);
+  const CategoryItem({Key? key, required this.title, required this.image})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +229,6 @@ class CategoryItem extends StatelessWidget {
   }
 }
 
-// Update your existing SearchBar widget
 class SearchBar extends StatelessWidget {
   const SearchBar({Key? key}) : super(key: key);
 
@@ -249,7 +254,7 @@ class SearchBar extends StatelessWidget {
             children: [
               SizedBox(width: 1.w),
               Text(
-                "  Search Products...",
+                S.of(context).Search_Products,
                 style: TextStyle(
                   fontSize: 16.sp,
                   color: const Color(0xff8391A1),

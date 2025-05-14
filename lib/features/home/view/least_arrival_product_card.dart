@@ -45,7 +45,7 @@ class LeastArrivalProductCard extends StatelessWidget {
 
               _buildProductCategory(context),
               SizedBox(height: 1.h),
-              _buildProductTitle(),
+              _buildProductTitle(context),
               SizedBox(height: 1.h),
 
               _buildProductPrice(),
@@ -88,7 +88,9 @@ class LeastArrivalProductCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            product.categoryName,
+            Localizations.localeOf(context).languageCode == 'ar'
+                ? product.categoryNameAr
+                : product.categoryNameEn,
             style: TextStyle(
               fontSize: 16.sp,
               color: Colors.black.withOpacity(0.8),
@@ -127,7 +129,8 @@ class LeastArrivalProductCard extends StatelessWidget {
                                   FirebaseAuth.instance.currentUser?.uid ?? '';
                               final wishlistItem = WishlistItem(
                                 id: product.id,
-                                name: product.title.en,
+                                nameEn: product.title.en,
+                                nameAr: product.title.ar,
                                 imageUrl: product.mainImage,
                                 price: product.price,
                               );
@@ -146,7 +149,10 @@ class LeastArrivalProductCard extends StatelessWidget {
                     imageUrl: product.mainImage,
                     price: product.price,
                     quantity: 1,
-                    categoryName: product.categoryName,
+                    categoryName:
+                        Localizations.localeOf(context).languageCode == 'ar'
+                            ? product.categoryNameAr
+                            : product.categoryNameEn,
                   );
                   context.read<CartCubit>().addToCart(cartItem);
 
@@ -207,10 +213,13 @@ class LeastArrivalProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProductTitle() {
+  Widget _buildProductTitle(BuildContext context) {
     return Center(
       child: Text(
-        product.title.en,
+        //add localization
+        Localizations.localeOf(context).languageCode == 'ar'
+            ? product.title.ar
+            : product.title.en,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: TextStyle(

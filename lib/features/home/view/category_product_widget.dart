@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:grabit_ecommerce/features/home/products/model/product_model.dart';
+import 'package:grabit_ecommerce/features/home/view/product_details_page.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
@@ -99,9 +100,10 @@ class CategoryProductsWidget extends StatelessWidget {
               ),
               SizedBox(height: 1.h),
 
-              // Product Title
               Text(
-                product.title.en,
+                Localizations.localeOf(context).languageCode == 'ar'
+                    ? product.title.ar
+                    : product.title.en,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -112,16 +114,17 @@ class CategoryProductsWidget extends StatelessWidget {
               ),
               SizedBox(height: 0.5.h),
 
-              // Product Category
               Text(
-                product.categoryName,
+                Localizations.localeOf(context).languageCode == 'ar'
+                    ? product.categoryNameAr
+                    : product.categoryNameEn,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
               ),
+
               SizedBox(height: 1.h),
 
-              // Price and Add to Cart
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -166,7 +169,8 @@ class CategoryProductsWidget extends StatelessWidget {
       final wishlistCubit = context.read<WishlistCubit>();
       final wishlistItem = WishlistItem(
         id: product.id,
-        name: product.title.en,
+        nameAr: product.title.ar,
+        nameEn: product.title.en,
         imageUrl: product.mainImage,
         price: product.price,
       );
@@ -175,22 +179,38 @@ class CategoryProductsWidget extends StatelessWidget {
   }
 
   void _addToCart(BuildContext context) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+
     final cartItem = CartItem(
       id: product.id,
       productId: product.productId,
-      name: product.title.en,
+      name: languageCode == 'ar' ? product.title.ar : product.title.en,
       imageUrl: product.mainImage,
       price: product.price,
       quantity: 1,
-      categoryName: product.categoryName,
+      categoryName:
+          languageCode == 'ar'
+              ? product.categoryNameAr
+              : product.categoryNameEn,
     );
+
     context.read<CartCubit>().addToCart(cartItem);
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Added to cart!')));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          languageCode == 'ar' ? 'تمت الإضافة إلى السلة!' : 'Added to cart!',
+        ),
+      ),
+    );
   }
 
   void _navigateToProductDetails(BuildContext context) {
-    // Implement navigation to product details
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProductDetailsPage(product: product),
+      ),
+    );
   }
 }
