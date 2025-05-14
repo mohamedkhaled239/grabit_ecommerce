@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // ← Add this
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   Future<String> getUserName() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -38,7 +39,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6FA),
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(S.of(context).Profile),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 1,
@@ -46,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
       ),
       body:
           user == null
-              ? const Center(child: Text('No user found'))
+              ? Center(child: Text(S.of(context).No_user_found))
               : Center(
                 child: SingleChildScrollView(
                   child: Column(
@@ -108,7 +109,7 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           ),
                           icon: const Icon(Icons.logout),
-                          label: const Text('Logout'),
+                          label: Text(S.of(context).Logout),
                           onPressed: () => _logout(context),
                         ),
                       ),

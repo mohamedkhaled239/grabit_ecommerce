@@ -54,7 +54,8 @@ class Product {
   final int cartAdds;
   final Timestamp createdAt;
   final Timestamp updatedAt;
-  final String categoryName;
+  final String categoryNameEn;
+  final String categoryNameAr;
 
   Product({
     required this.id,
@@ -81,7 +82,8 @@ class Product {
     required this.cartAdds,
     required this.createdAt,
     required this.updatedAt,
-    required this.categoryName,
+    required this.categoryNameEn,
+    required this.categoryNameAr,
   });
 
   factory Product.fromFirestore(DocumentSnapshot doc) {
@@ -95,7 +97,8 @@ class Product {
             : {};
 
     return Product(
-      categoryName: data['categoryId']['name']['en']?.toString() ?? '',
+      categoryNameEn: data['categoryId']['name']['en']?.toString() ?? '',
+      categoryNameAr: data['categoryId']['name']['ar']?.toString() ?? '',
       id: doc.id,
       productId: data['productId']?.toString() ?? '',
       productType: data['productType']?.toString() ?? 'simple',

@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 
 class WishlistScreen extends StatelessWidget {
-  const WishlistScreen({Key? key}) : super(key: key);
+  const WishlistScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text(S.of(context).Wishlist),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
         backgroundColor: const Color(0xFFF8F6FA),
         body: BlocBuilder<WishlistCubit, WishlistState>(
           builder: (context, state) {
@@ -21,7 +28,7 @@ class WishlistScreen extends StatelessWidget {
               if (items.isEmpty) {
                 return Center(
                   child: Text(
-                    'Your wishlist is empty',
+                    S.of(context).Your_wishlist_is_empty,
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   ),
                 );
@@ -33,6 +40,8 @@ class WishlistScreen extends StatelessWidget {
                 separatorBuilder: (_, __) => SizedBox(height: 2),
                 itemBuilder: (context, index) {
                   final item = items[index];
+                  final langCode = Localizations.localeOf(context).languageCode;
+                  final itemName = langCode == 'ar' ? item.nameAr : item.nameEn;
                   return Card(
                     elevation: 4,
                     shape: RoundedRectangleBorder(
@@ -61,7 +70,7 @@ class WishlistScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  item.name,
+                                  itemName,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -69,6 +78,7 @@ class WishlistScreen extends StatelessWidget {
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
+
                                 SizedBox(height: 0.5),
                                 Text(
                                   '\$${item.price.toStringAsFixed(2)}',

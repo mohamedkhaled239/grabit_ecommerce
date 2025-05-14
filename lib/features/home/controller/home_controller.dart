@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:grabit_ecommerce/features/home/products/model/product_model.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_state.dart';
 import 'package:grabit_ecommerce/features/home/model/home_model.dart';
@@ -35,15 +36,21 @@ class HomeController extends Cubit<HomeState> {
     }).toList();
   }
 
-  Stream<List<Product>> getProductsByCategory(String categoryName) {
+  Stream<List<Product>> getProductsByCategory(
+    String categoryName,
+    BuildContext context,
+  ) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+
     return _model.getLatestProducts().map((products) {
-      return products
-          .where(
-            (product) =>
-                product.categoryName.toLowerCase() ==
-                categoryName.toLowerCase(),
-          )
-          .toList();
+      return products.where((product) {
+        final productCategoryName =
+            languageCode == 'ar'
+                ? product.categoryNameAr
+                : product.categoryNameEn;
+
+        return productCategoryName.toLowerCase() == categoryName.toLowerCase();
+      }).toList();
     });
   }
 }

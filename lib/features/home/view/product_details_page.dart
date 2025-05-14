@@ -5,7 +5,7 @@ import 'package:html/parser.dart' as html_parser;
 
 class ProductDetailsPage extends StatelessWidget {
   final Product product;
-  const ProductDetailsPage({Key? key, required this.product}) : super(key: key);
+  const ProductDetailsPage({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,10 @@ class ProductDetailsPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: const Color(0xFFF8F8F8),
         appBar: AppBar(
-          title: Text(product.title.en, style: const TextStyle(fontWeight: FontWeight.bold)),
+          title: Text(
+            product.title.en,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
           elevation: 1,
@@ -53,27 +56,54 @@ class ProductDetailsPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(product.title.en,
-                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        Text(
+                          product.title.en,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Text("${product.price} EGP",
-                                style: const TextStyle(fontSize: 18, color: Colors.green, fontWeight: FontWeight.bold)),
+                            Text(
+                              "${product.price} EGP",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 8),
-                        Text("SKU#: ${product.productId}",
-                            style: const TextStyle(fontSize: 14, color: Colors.black54)),
+                        Text(
+                          "SKU#: ${product.productId}",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
                         const SizedBox(height: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.green.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(product.categoryName,
-                              style: const TextStyle(fontSize: 13, color: Colors.green, fontWeight: FontWeight.w600)),
+                          child: Text(
+                            Localizations.localeOf(context).languageCode == 'ar'
+                                ? product.categoryNameAr
+                                : product.categoryNameEn,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Colors.green,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -104,21 +134,22 @@ class ProductDetailsPage extends StatelessWidget {
                     // Detail Tab
                     SingleChildScrollView(
                       padding: const EdgeInsets.all(24.0),
-                      child: product.description.en.isNotEmpty
-                          ? Text(
-                              htmlToPlainText(product.description.en),
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Colors.black87,
-                                height: 1.6,
-                              ),
-                              textAlign: TextAlign.justify,
-                              softWrap: true,
-                              overflow: TextOverflow.visible,
-                            )
-                          : const Text("No description available."),
+                      child:
+                          product.description.en.isNotEmpty
+                              ? Text(
+                                htmlToPlainText(product.description.en),
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black87,
+                                  height: 1.6,
+                                ),
+                                textAlign: TextAlign.justify,
+                                softWrap: true,
+                                overflow: TextOverflow.visible,
+                              )
+                              : const Text("No description available."),
                     ),
-                    // Specifications Tab
+
                     SingleChildScrollView(
                       padding: const EdgeInsets.all(24.0),
                       child: Column(
@@ -126,22 +157,40 @@ class ProductDetailsPage extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.category, color: Colors.green, size: 20),
+                              const Icon(
+                                Icons.category,
+                                color: Colors.green,
+                                size: 20,
+                              ),
                               const SizedBox(width: 8),
-                              Text("Category: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                              Text(product.categoryName),
+                              Text(
+                                "Category: ",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                Localizations.localeOf(context).languageCode ==
+                                        'ar'
+                                    ? product.categoryNameAr
+                                    : product.categoryNameEn,
+                              ),
                             ],
                           ),
                           const SizedBox(height: 12),
                           Row(
                             children: [
-                              const Icon(Icons.confirmation_number, color: Colors.green, size: 20),
+                              const Icon(
+                                Icons.confirmation_number,
+                                color: Colors.green,
+                                size: 20,
+                              ),
                               const SizedBox(width: 8),
-                              Text("SKU: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                              Text(
+                                "SKU: ",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                               Text(product.productId),
                             ],
                           ),
-                          // أضف المزيد من المواصفات هنا إذا أردت
                         ],
                       ),
                     ),
@@ -151,13 +200,19 @@ class ProductDetailsPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.store, color: Colors.green, size: 24),
+                          const Icon(
+                            Icons.store,
+                            color: Colors.green,
+                            size: 24,
+                          ),
                           const SizedBox(height: 8),
-                          Text("Vendor ID: ${product.vendorId}", style: const TextStyle(fontSize: 16)),
+                          Text(
+                            "Vendor ID: ${product.vendorId}",
+                            style: const TextStyle(fontSize: 16),
+                          ),
                         ],
                       ),
                     ),
-                    // Reviews Tab
                     SingleChildScrollView(
                       padding: const EdgeInsets.all(24.0),
                       child: const Text("No reviews yet."),
@@ -176,4 +231,4 @@ class ProductDetailsPage extends StatelessWidget {
     final document = html_parser.parse(htmlString);
     return document.body?.text ?? '';
   }
-} 
+}

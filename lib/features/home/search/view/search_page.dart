@@ -1,9 +1,9 @@
-// features/home/search/view/search_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_controller.dart';
 import 'package:grabit_ecommerce/features/home/products/model/product_model.dart';
 import 'package:grabit_ecommerce/features/home/view/least_arrival_product_card.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class SearchPage extends StatefulWidget {
@@ -60,7 +60,6 @@ class _SearchPageState extends State<SearchPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Custom search bar matching home page style
             Padding(
               padding: EdgeInsets.all(4.w),
               child: Container(
@@ -80,7 +79,7 @@ class _SearchPageState extends State<SearchPage> {
                         controller: _searchController,
                         autofocus: true,
                         decoration: InputDecoration(
-                          hintText: "Search Products...",
+                          hintText: S.of(context).Search_Products,
                           hintStyle: TextStyle(
                             fontSize: 16.sp,
                             color: const Color(0xff8391A1),
@@ -107,9 +106,9 @@ class _SearchPageState extends State<SearchPage> {
             Expanded(
               child:
                   _searchResults.isEmpty && _searchController.text.isNotEmpty
-                      ? const Center(
+                      ? Center(
                         child: Text(
-                          'No products found',
+                          S.of(context).No_products_found,
                           style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                       )

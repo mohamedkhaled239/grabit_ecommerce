@@ -4,6 +4,7 @@ import 'package:grabit_ecommerce/features/home/controller/home_controller.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_state.dart';
 import 'package:grabit_ecommerce/features/home/products/model/product_model.dart';
 import 'package:grabit_ecommerce/features/home/view/category_product_widget.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -40,21 +41,40 @@ class CategoryProductsPage extends StatelessWidget {
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return const Center(child: Text('No Products Found'));
               }
+              // Filter products based on the selected category
+              // Assuming categoryName is the name of the category you want to filter by
+              // and that the product model has a categoryName field
+              final currentLang = Localizations.localeOf(context).languageCode;
 
               final categoryProducts =
                   snapshot.data!
                       .where(
-                        (product) => product.categoryName
-                            .toLowerCase()
-                            .contains(categoryName.toLowerCase()),
+                        (product) =>
+                            currentLang == 'ar'
+                                ? product.categoryNameAr.toLowerCase().contains(
+                                  categoryName.toLowerCase(),
+                                )
+                                : product.categoryNameEn.toLowerCase().contains(
+                                      categoryName.toLowerCase(),
+                                    ) ||
+                                    product.categoryNameAr
+                                        .toLowerCase()
+                                        .contains(categoryName.toLowerCase()),
                       )
                       .toList();
 
               if (categoryProducts.isEmpty) {
                 return Center(
-                  child: Text(
-                    'No products found in $categoryName',
-                    style: TextStyle(fontSize: 16.sp),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        S.of(context).No_products_found_in,
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                      Text(' $categoryName', style: TextStyle(fontSize: 16.sp)),
+                    ],
                   ),
                 );
               }
