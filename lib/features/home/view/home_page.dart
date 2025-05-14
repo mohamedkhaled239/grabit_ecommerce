@@ -4,6 +4,7 @@ import 'package:grabit_ecommerce/features/home/controller/home_controller.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_state.dart';
 import 'package:grabit_ecommerce/features/home/model/home_model.dart';
 import 'package:grabit_ecommerce/features/home/search/view/search_page.dart';
+import 'package:grabit_ecommerce/features/home/view/category_products_page.dart';
 import 'package:grabit_ecommerce/features/home/view/least_arrival_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -43,15 +44,26 @@ class _HomePageContent extends StatelessWidget {
   const _HomePageContent({required this.customId});
 
   final List<Map<String, dynamic>> categories = const [
-    {'title': 'Bakery', 'image': 'assets/images/bread.svg'},
-    {'title': 'vegetables', 'image': 'assets/images/corn.svg'},
-    {'title': 'Juice & Drinks', 'image': 'assets/images/hamburger-soda.svg'},
+    {'title': 'Clothing', 'image': 'assets/images/bread.svg'},
+    {'title': 'Electronics', 'image': 'assets/images/corn.svg'},
+    {'title': 'Home & Kitchen', 'image': 'assets/images/hamburger-soda.svg'},
     {'title': 'Snack & Spice', 'image': 'assets/images/french-fries.svg'},
     {'title': 'Dairy & Milk', 'image': 'assets/images/coffee-pot.svg'},
     {'title': 'Seafood', 'image': 'assets/images/shrimp.svg'},
-    {'title': 'Fast Food', 'image': 'assets/images/popcorn.svg'},
+    {'title': 'Food', 'image': 'assets/images/popcorn.svg'},
     {'title': 'Eggs', 'image': 'assets/images/egg.svg'},
   ];
+
+  // final List<Map<String, dynamic>> categories = const [
+  //   {'title': 'Bakery', 'image': 'assets/images/bread.svg'},
+  //   {'title': 'vegetables', 'image': 'assets/images/corn.svg'},
+  //   {'title': 'Juice & Drinks', 'image': 'assets/images/hamburger-soda.svg'},
+  //   {'title': 'Snack & Spice', 'image': 'assets/images/french-fries.svg'},
+  //   {'title': 'Dairy & Milk', 'image': 'assets/images/coffee-pot.svg'},
+  //   {'title': 'Seafood', 'image': 'assets/images/shrimp.svg'},
+  //   {'title': 'Fast Food', 'image': 'assets/images/popcorn.svg'},
+  //   {'title': 'Eggs', 'image': 'assets/images/egg.svg'},
+  // ];
 
   final List<Widget> banners = const [
     _BannerCard(image: 'assets/images/1.jpg'),
@@ -170,7 +182,14 @@ class CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CategoryProductsPage(categoryName: title),
+          ),
+        );
+      },
       child: Padding(
         padding: EdgeInsets.all(2.w),
         child: Column(
