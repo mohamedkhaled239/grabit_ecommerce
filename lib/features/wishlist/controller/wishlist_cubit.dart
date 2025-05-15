@@ -27,6 +27,8 @@ class WishlistCubit extends Cubit<WishlistState> {
     loadWishlist();
   }
 
+  List<WishlistItem> _items = [];
+
   static WishlistCubit createWithCurrentUser() {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -45,15 +47,16 @@ class WishlistCubit extends Cubit<WishlistState> {
         final wishlistData =
             userDoc.data()?['wishlist'] as List<dynamic>? ?? [];
 
-        final items =
+        _items =
             wishlistData
                 .map(
                   (item) => WishlistItem.fromMap(item as Map<String, dynamic>),
                 )
                 .toList();
 
-        emit(WishlistLoaded(items));
+        emit(WishlistLoaded(List.from(_items)));
       } else {
+        _items = [];
         emit(WishlistLoaded([]));
       }
     } catch (e) {
@@ -63,11 +66,15 @@ class WishlistCubit extends Cubit<WishlistState> {
 
   Future<void> addToWishlist(WishlistItem item) async {
     try {
-      await _firestore.collection('users').doc(userId).update({
-        'wishlist': FieldValue.arrayUnion([item.toMap()]),
-      });
+      if (_items.any((element) => element.id == item.id)) return;
 
-      loadWishlist();
+      _items.add(item);
+
+      await _firestore.collection('users').doc(userId).set({
+        'wishlist': _items.map((e) => e.toMap()).toList(),
+      }, SetOptions(merge: true));
+
+      emit(WishlistLoaded(List.from(_items)));
     } catch (e) {
       emit(WishlistError(e.toString()));
     }
@@ -75,27 +82,20 @@ class WishlistCubit extends Cubit<WishlistState> {
 
   Future<void> removeFromWishlist(String itemId) async {
     try {
-      final userDoc = await _firestore.collection('users').doc(userId).get();
-      final wishlist = userDoc.data()?['wishlist'] as List<dynamic>? ?? [];
+      _items.removeWhere((element) => element.id == itemId);
 
-      final itemToRemove = wishlist.firstWhere(
-        (item) => (item as Map<String, dynamic>)['id'] == itemId,
-        orElse: () => null,
-      );
+      await _firestore.collection('users').doc(userId).set({
+        'wishlist': _items.map((e) => e.toMap()).toList(),
+      }, SetOptions(merge: true));
 
-      if (itemToRemove != null) {
-        await _firestore.collection('users').doc(userId).update({
-          'wishlist': FieldValue.arrayRemove([itemToRemove]),
-        });
-      }
-
-      loadWishlist();
+      emit(WishlistLoaded(List.from(_items)));
     } catch (e) {
       emit(WishlistError(e.toString()));
     }
   }
 
   void clearWishlist() {
+    _items.clear();
     emit(WishlistLoaded([]));
   }
 }

@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grabit_ecommerce/features/profile/controller/Locale_cubit.dart';
 import 'package:grabit_ecommerce/generated/l10n.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // ← Add this
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String _selectedLanguage = 'en';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLanguagePreference();
+  }
+
+  Future<void> _loadLanguagePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _selectedLanguage = prefs.getString('language') ?? 'en';
+    });
+  }
 
   Future<String> getUserName() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -24,6 +46,10 @@ class ProfileScreen extends StatelessWidget {
     return 'User';
   }
 
+  Future<void> _changeLanguage(String languageCode) async {
+    context.read<LocaleCubit>().changeLocale(languageCode);
+  }
+
   Future<void> _logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
@@ -35,6 +61,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F6FA),
@@ -44,10 +71,52 @@ class ProfileScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 1,
         iconTheme: const IconThemeData(color: Colors.black),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: _changeLanguage,
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(
+                  value: 'en',
+                  child: Row(
+                    children: [
+                      const Text('English'),
+                      if (_selectedLanguage == 'en')
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8),
+                          child: Icon(Icons.check, size: 18),
+                        ),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'ar',
+                  child: Row(
+                    children: [
+                      const Text('العربية'),
+                      if (_selectedLanguage == 'ar')
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8),
+                          child: Icon(Icons.check, size: 18),
+                        ),
+                    ],
+                  ),
+                ),
+              ];
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                Icons.language,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        ],
       ),
       body:
           user == null
-              ? Center(child: Text(S.of(context).No_user_found))
+              ? Center(child: Text(S.of(context).No_products_found))
               : Center(
                 child: SingleChildScrollView(
                   child: Column(
@@ -74,7 +143,7 @@ class ProfileScreen extends StatelessWidget {
                       FutureBuilder<String>(
                         future: getUserName(),
                         builder: (context, snapshot) {
-                          final name = snapshot.data ?? 'User';
+                          final name = user.displayName ?? snapshot.data ?? '';
                           return Text(
                             name,
                             style: const TextStyle(
