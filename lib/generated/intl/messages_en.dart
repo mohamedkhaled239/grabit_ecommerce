@@ -22,6 +22,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+    "Already_have_account": MessageLookupByLibrary.simpleMessage(
+      "Already have an account? Login",
+    ),
     "CHECKOUT": MessageLookupByLibrary.simpleMessage("CHECKOUT"),
     "Cart": MessageLookupByLibrary.simpleMessage("Cart"),
     "Cart_is_empty": MessageLookupByLibrary.simpleMessage("Your cart is empty"),
@@ -32,8 +35,26 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "Eggs": MessageLookupByLibrary.simpleMessage("Eggs"),
     "Electronics": MessageLookupByLibrary.simpleMessage("Electronics"),
+    "Enter_your_email": MessageLookupByLibrary.simpleMessage(
+      "Enter your email",
+    ),
+    "Enter_your_full_name": MessageLookupByLibrary.simpleMessage(
+      "Enter full name",
+    ),
+    "Enter_your_name": MessageLookupByLibrary.simpleMessage("Enter your name"),
+    "Enter_your_password": MessageLookupByLibrary.simpleMessage(
+      "Enter your password",
+    ),
+    "Enter_your_password_confirmation": MessageLookupByLibrary.simpleMessage(
+      "Enter  password confirmation",
+    ),
+    "Enter_your_phone": MessageLookupByLibrary.simpleMessage(
+      "Enter your phone",
+    ),
     "Food": MessageLookupByLibrary.simpleMessage("Food"),
     "Home": MessageLookupByLibrary.simpleMessage(" Home"),
+    "Login": MessageLookupByLibrary.simpleMessage("Login"),
+    "Login_failed": MessageLookupByLibrary.simpleMessage("Login failed"),
     "Logout": MessageLookupByLibrary.simpleMessage("Logout"),
     "No_products_found": MessageLookupByLibrary.simpleMessage(
       "No products found",
@@ -43,10 +64,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "No_user_found": MessageLookupByLibrary.simpleMessage("No user found"),
     "Profile": MessageLookupByLibrary.simpleMessage("Profile"),
+    "Register": MessageLookupByLibrary.simpleMessage("Register"),
     "SeaFood": MessageLookupByLibrary.simpleMessage("SeaFood"),
     "Search_Products": MessageLookupByLibrary.simpleMessage(
       "Search Products...",
     ),
+    "Sign_Up": MessageLookupByLibrary.simpleMessage("  Sign Up"),
     "Snack_Spices": MessageLookupByLibrary.simpleMessage("Snacks & Spices"),
     "Subtotal": MessageLookupByLibrary.simpleMessage("Subtotal:"),
     "Total": MessageLookupByLibrary.simpleMessage("Total:"),
@@ -56,5 +79,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "Your_wishlist_is_empty": MessageLookupByLibrary.simpleMessage(
       "Your wishlist is empty",
     ),
+    "dont_have_an_account": MessageLookupByLibrary.simpleMessage(
+      "Don\\\'t have an account? ",
+    ),
+    "email": MessageLookupByLibrary.simpleMessage("email"),
+    "password": MessageLookupByLibrary.simpleMessage("password"),
   };
 }

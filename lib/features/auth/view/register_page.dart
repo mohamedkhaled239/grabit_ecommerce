@@ -9,6 +9,7 @@ import 'package:grabit_ecommerce/features/auth/controller/register_state.dart';
 import 'package:grabit_ecommerce/features/auth/model/register_model.dart';
 import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
 import 'package:grabit_ecommerce/features/root_screen.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -75,7 +76,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Column(
                       children: [
                         SizedBox(height: 70),
-                        // Profile Image Placeholder
+
                         GestureDetector(
                           onTap: () => _pickProfileImage(context),
                           child: CircleAvatar(
@@ -93,10 +94,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         SizedBox(height: 10),
 
-                        // Name Field
                         CustomTextField(
                           controller: _nameController,
-                          hintText: 'Full Name',
+                          hintText: S.of(context).Enter_your_full_name,
                           prefixIcon: Icons.person,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -108,10 +108,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         SizedBox(height: 5),
 
-                        // Email Field
                         CustomTextField(
                           controller: _emailController,
-                          hintText: 'Email',
+                          hintText: S.of(context).email,
                           prefixIcon: Icons.email,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -126,10 +125,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         SizedBox(height: 5),
 
-                        // Phone Field
                         CustomTextField(
                           controller: _phoneController,
-                          hintText: 'Phone Number',
+                          hintText: S.of(context).Enter_your_password,
                           prefixIcon: Icons.phone,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -141,10 +139,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         SizedBox(height: 5),
 
-                        // Password Field
                         CustomTextField(
                           controller: _passwordController,
-                          hintText: 'Password',
+                          hintText: S.of(context).password,
                           obscureText: true,
                           prefixIcon: Icons.lock,
                           validator: (value) {
@@ -159,10 +156,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         SizedBox(height: 5),
 
-                        // Confirm Password Field
                         CustomTextField(
                           controller: _confirmPasswordController,
-                          hintText: 'Confirm Password',
+                          hintText:
+                              S.of(context).Enter_your_password_confirmation,
                           obscureText: true,
                           prefixIcon: Icons.lock_outline,
                           validator: (value) {
@@ -174,17 +171,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         SizedBox(height: 10),
 
-                        // Register Button
                         CustomButton(
-                          text: 'Register',
+                          text: S.of(context).Register,
                           onPressed: () => _registerUser(context),
                         ),
 
-                        // Login Link
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           child: Text(
-                            'Already have an account? Login',
+                            S.of(context).Already_have_account,
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),

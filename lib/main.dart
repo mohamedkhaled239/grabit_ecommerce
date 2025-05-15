@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        locale: const Locale('en', 'US'),
+        locale: const Locale('ar', 'EG'),
         localizationsDelegates: [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
