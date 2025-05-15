@@ -18,15 +18,31 @@ import 'package:grabit_ecommerce/features/root_screen.dart';
 import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
 import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grabit_ecommerce/core/theme/theme_cubit.dart';
+import 'package:grabit_ecommerce/core/theme/app_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
+  try {
+    await Firebase.initializeApp();
+    final prefs = await SharedPreferences.getInstance();
+    runApp(MyApp(prefs: prefs));
+  } catch (e) {
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text('Error initializing app: $e'),
+        ),
+      ),
+    ));
+  }
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final SharedPreferences prefs;
+  
+  const MyApp({super.key, required this.prefs});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +55,7 @@ class MyApp extends StatelessWidget {
           child: const LeastArrivalWidget(),
         ),
         BlocProvider(
-          create: (_) => CartCubit(FirebaseAuth.instance.currentUser!.uid),
+          create: (_) => CartCubit(FirebaseAuth.instance.currentUser?.uid ?? ''),
           child: CartScreen(),
         ),
         BlocProvider(
@@ -48,21 +64,28 @@ class MyApp extends StatelessWidget {
             return WishlistCubit(userId)..loadWishlist();
           },
         ),
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
+        BlocProvider(
+          create: (_) => ThemeCubit(prefs),
         ),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const AuthWrapper(),
-          '/login': (context) => const LoginPage(),
-          '/register': (context) => const RegisterScreen(),
-          '/home': (context) => const HomePage(),
-          '/root': (context) => const RootScreen(),
-          '/search': (context) => const SearchPage(),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, state) {
+          final isDarkMode = state is ThemeLoaded ? state.isDarkMode : false;
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            initialRoute: '/',
+            routes: {
+              '/': (context) => const AuthWrapper(),
+              '/login': (context) => const LoginPage(),
+              '/register': (context) => const RegisterScreen(),
+              '/home': (context) => const HomePage(),
+              '/root': (context) => const RootScreen(),
+              '/search': (context) => const SearchPage(),
+            },
+          );
         },
       ),
     );

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // ← Add this
+import 'package:grabit_ecommerce/features/checkout/view/checkout_payment_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grabit_ecommerce/features/auth/controller/auth_controller.dart';
+import 'package:grabit_ecommerce/core/theme/theme_cubit.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -34,88 +38,88 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
+    final authController = context.read<AuthController>();
+    final themeCubit = context.read<ThemeCubit>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F6FA),
       appBar: AppBar(
         title: const Text('Profile'),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 1,
-        iconTheme: const IconThemeData(color: Colors.black),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => authController.logout(),
+          ),
+        ],
       ),
-      body:
-          user == null
-              ? const Center(child: Text('No user found'))
-              : Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 54,
-                        backgroundColor: Colors.grey[200],
-                        backgroundImage:
-                            user.photoURL != null
-                                ? NetworkImage(user.photoURL!)
-                                : null,
-                        child:
-                            user.photoURL == null
-                                ? const Icon(
-                                  Icons.person,
-                                  size: 60,
-                                  color: Colors.grey,
-                                )
-                                : null,
-                      ),
-                      const SizedBox(height: 24),
-                      FutureBuilder<String>(
-                        future: getUserName(),
-                        builder: (context, snapshot) {
-                          final name = snapshot.data ?? 'User';
-                          return Text(
-                            name,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 22,
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        user.email ?? '',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: 200,
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            textStyle: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          icon: const Icon(Icons.logout),
-                          label: const Text('Logout'),
-                          onPressed: () => _logout(context),
-                        ),
-                      ),
-                    ],
-                  ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text(user?.displayName ?? 'User'),
+              accountEmail: Text(user?.email ?? ''),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Text(
+                  (user?.displayName ?? 'U')[0].toUpperCase(),
+                  style: const TextStyle(fontSize: 40.0),
                 ),
               ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            BlocBuilder<ThemeCubit, ThemeState>(
+              builder: (context, state) {
+                final isDarkMode = state is ThemeLoaded ? state.isDarkMode : false;
+                return SwitchListTile(
+                  title: const Text('Dark Mode'),
+                  subtitle: Text(isDarkMode ? 'Dark theme enabled' : 'Light theme enabled'),
+                  value: isDarkMode,
+                  onChanged: (value) async {
+                    await themeCubit.toggleTheme();
+                  },
+                  secondary: Icon(
+                    isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                    color: isDarkMode ? Colors.amber : Colors.grey,
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () => authController.logout(),
+            ),
+          ],
+        ),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 50,
+              backgroundColor: Theme.of(context).primaryColor,
+              child: Text(
+                (user?.displayName ?? 'U')[0].toUpperCase(),
+                style: const TextStyle(fontSize: 40.0, color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              user?.displayName ?? 'User',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              user?.email ?? '',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/features/cart/controller/cart_state.dart';
 import '../controller/cart_cubit.dart';
+import 'package:grabit_ecommerce/features/checkout/view/checkout_payment_page.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      appBar: AppBar(title: const Text('My Cart')),
+      appBar: AppBar(
+        title: const Text('My Cart'),
+      ),
       body: BlocBuilder<CartCubit, CartState>(
         builder: (context, state) {
           if (state is CartLoading) {
@@ -19,7 +24,12 @@ class CartScreen extends StatelessWidget {
             final items = state.items;
 
             if (items.isEmpty) {
-              return const Center(child: Text('Your cart is empty'));
+              return Center(
+                child: Text(
+                  'Your cart is empty',
+                  style: theme.textTheme.titleLarge,
+                ),
+              );
             }
 
             return Column(
@@ -38,11 +48,14 @@ class CartScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(12),
                           child: Row(
                             children: [
-                              Image.network(
-                                item.imageUrl,
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: Image.network(
+                                  item.imageUrl,
+                                  width: 60,
+                                  height: 60,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               const SizedBox(width: 16),
                               Expanded(
@@ -51,44 +64,45 @@ class CartScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       item.name,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                      style: theme.textTheme.titleMedium,
+                                    ),
+                                    Text(
+                                      '\$${item.price.toStringAsFixed(2)}',
+                                      style: theme.textTheme.bodyLarge?.copyWith(
+                                        color: theme.colorScheme.primary,
                                       ),
                                     ),
-                                    Text('\$${item.price.toStringAsFixed(2)}'),
                                   ],
                                 ),
                               ),
                               Column(
                                 children: [
                                   IconButton(
-                                    icon: const Icon(
-                                      Icons.close,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed:
-                                        () => cubit.removeFromCart(item.id),
+                                    icon: const Icon(Icons.close),
+                                    color: theme.colorScheme.error,
+                                    onPressed: () => cubit.removeFromCart(item.id),
                                   ),
                                   Row(
                                     children: [
                                       IconButton(
                                         icon: const Icon(Icons.remove),
-                                        onPressed:
-                                            item.quantity > 1
-                                                ? () => cubit.updateQuantity(
+                                        onPressed: item.quantity > 1
+                                            ? () => cubit.updateQuantity(
                                                   item.id,
                                                   item.quantity - 1,
                                                 )
-                                                : null,
+                                            : null,
                                       ),
-                                      Text(item.quantity.toString()),
+                                      Text(
+                                        item.quantity.toString(),
+                                        style: theme.textTheme.titleMedium,
+                                      ),
                                       IconButton(
                                         icon: const Icon(Icons.add),
-                                        onPressed:
-                                            () => cubit.updateQuantity(
-                                              item.id,
-                                              item.quantity + 1,
-                                            ),
+                                        onPressed: () => cubit.updateQuantity(
+                                          item.id,
+                                          item.quantity + 1,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -101,7 +115,7 @@ class CartScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                _buildSummary(cubit),
+                _buildSummary(context, cubit),
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Row(
@@ -115,10 +129,14 @@ class CartScreen extends StatelessWidget {
                       const SizedBox(width: 16),
                       Expanded(
                         child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                          ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CheckoutPaymentPage(),
+                              ),
+                            );
+                          },
                           child: const Text('CHECKOUT'),
                         ),
                       ),
@@ -128,7 +146,14 @@ class CartScreen extends StatelessWidget {
               ],
             );
           } else if (state is CartError) {
-            return Center(child: Text(state.message));
+            return Center(
+              child: Text(
+                state.message,
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            );
           }
           return const SizedBox();
         },
@@ -136,24 +161,28 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSummary(CartCubit cubit) {
+  Widget _buildSummary(BuildContext context, CartCubit cubit) {
+    final theme = Theme.of(context);
+    
     return Card(
       margin: const EdgeInsets.all(16),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildSummaryRow('Subtotal:', cubit.subtotal),
-            _buildSummaryRow('VAT (20%):', cubit.vat),
+            _buildSummaryRow(context, 'Subtotal:', cubit.subtotal),
+            _buildSummaryRow(context, 'VAT (20%):', cubit.vat),
             const Divider(),
-            _buildSummaryRow('Total:', cubit.total, isBold: true),
+            _buildSummaryRow(context, 'Total:', cubit.total, isBold: true),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSummaryRow(String label, double value, {bool isBold = false}) {
+  Widget _buildSummaryRow(BuildContext context, String label, double value, {bool isBold = false}) {
+    final theme = Theme.of(context);
+    
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -161,14 +190,15 @@ class CartScreen extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
             ),
           ),
           Text(
             '\$${value.toStringAsFixed(2)}',
-            style: TextStyle(
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              color: isBold ? theme.colorScheme.primary : null,
             ),
           ),
         ],

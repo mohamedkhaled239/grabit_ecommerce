@@ -15,21 +15,22 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => HomeController(HomeModel()),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: SafeArea(
           child: BlocBuilder<HomeController, HomeState>(
             builder: (context, state) {
               if (state is HomeLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(child: CircularProgressIndicator(color: theme.colorScheme.primary));
               } else if (state is HomeLoaded) {
                 return _HomePageContent(customId: state.customId);
               } else if (state is HomeError) {
-                return Center(child: Text(state.message));
+                return Center(child: Text(state.message, style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.error)));
               }
-              return const Center(child: Text('Unknown state'));
+              return Center(child: Text('Unknown state', style: theme.textTheme.bodyLarge));
             },
           ),
         ),
@@ -72,6 +73,7 @@ class _HomePageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,61 +92,64 @@ class _HomePageContent extends StatelessWidget {
       height: 13.h,
       child: ListView(
         scrollDirection: Axis.horizontal,
-        children:
-            categories
-                .map(
-                  (category) => CategoryItem(
-                    title: category['title'],
-                    image: category['image'],
-                    onTap: () {},
-                  ),
-                )
-                .toList(),
+        children: categories.map((category) => CategoryItem(
+          title: category['title'],
+          image: category['image'],
+          onTap: () {},
+        )).toList(),
       ),
     );
   }
 
   Widget _buildDealsSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: SizedBox(
-        height: 23.h,
-        child: Swiper(
-          itemCount: banners.length,
-          itemBuilder: (_, index) => banners[index],
-          autoplay: true,
-          autoplayDelay: 4000,
-          pagination: const SwiperPagination(
-            alignment: Alignment.bottomCenter,
-            builder: DotSwiperPaginationBuilder(
-              color: Colors.white,
-              activeColor: Color(0xFF5CAF90),
-              size: 8.0,
-              activeSize: 10.0,
+    return Builder(
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: SizedBox(
+            height: 23.h,
+            child: Swiper(
+              itemCount: banners.length,
+              itemBuilder: (_, index) => banners[index],
+              autoplay: true,
+              autoplayDelay: 4000,
+              pagination: SwiperPagination(
+                alignment: Alignment.bottomCenter,
+                builder: DotSwiperPaginationBuilder(
+                  color: Colors.white,
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  size: 8.0,
+                  activeSize: 10.0,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 
   Widget _buildLastArrivalSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.only(left: 6.w),
-          child: const Text(
-            'Day of The Deals',
-            style: TextStyle(
-              fontSize: 19,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF5CAF90),
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 6.w),
+              child: Text(
+                'Day of The Deals',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
-        ),
-        const LeastArrivalWidget(),
-      ],
+            const LeastArrivalWidget(),
+          ],
+        );
+      }
     );
   }
 }
@@ -181,6 +186,7 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -195,23 +201,20 @@ class CategoryItem extends StatelessWidget {
         child: Column(
           children: [
             SvgPicture.asset(
-              color: const Color(0xFF5CAF90),
+              color: theme.colorScheme.primary,
               image,
               width: 15.w,
-              placeholderBuilder:
-                  (BuildContext context) => Container(
-                    width: 15.w,
-                    height: 15.w,
-                    color: Colors.grey[300],
-                  ),
+              placeholderBuilder: (BuildContext context) => Container(
+                width: 15.w,
+                height: 15.w,
+                color: theme.colorScheme.surface,
+              ),
             ),
             SizedBox(height: 1.h),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 14.sp,
+              style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -223,12 +226,12 @@ class CategoryItem extends StatelessWidget {
   }
 }
 
-// Update your existing SearchBar widget
 class SearchBar extends StatelessWidget {
   const SearchBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(4.w),
       child: GestureDetector(
@@ -241,22 +244,21 @@ class SearchBar extends StatelessWidget {
         child: Container(
           height: 7.h,
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 255, 255, 255),
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.grey, width: 1.0),
+            border: Border.all(color: theme.dividerColor),
           ),
           child: Row(
             children: [
               SizedBox(width: 1.w),
               Text(
                 "  Search Products...",
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: const Color(0xff8391A1),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurface.withOpacity(0.6),
                 ),
               ),
               const Spacer(),
-              const Icon(Icons.search, color: Color(0xff8391A1)),
+              Icon(Icons.search, color: theme.colorScheme.onSurface.withOpacity(0.6)),
               SizedBox(width: 3.w),
             ],
           ),
