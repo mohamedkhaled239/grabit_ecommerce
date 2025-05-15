@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grabit_ecommerce/features/home/products/model/product_model.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:html/parser.dart' as html_parser;
 
 class ProductDetailsPage extends StatelessWidget {

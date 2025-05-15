@@ -101,44 +101,46 @@ class LeastArrivalProductCard extends StatelessWidget {
             children: [
               BlocBuilder<WishlistCubit, WishlistState>(
                 builder: (context, state) {
+                  final wishlistCubit = context.read<WishlistCubit>();
                   bool isInWishlist = false;
+
                   if (state is WishlistLoaded) {
                     isInWishlist = state.items.any(
                       (item) => item.id == product.id,
                     );
                   }
+
                   return IconButton(
                     icon: Icon(
                       Icons.favorite,
                       color: isInWishlist ? Colors.red : Colors.grey,
                     ),
-                    onPressed:
-                        isInWishlist
-                            ? () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Already exists')),
-                              );
-                            }
-                            : () {
-                              final wishlistCubit =
-                                  BlocProvider.of<WishlistCubit>(
-                                    context,
-                                    listen: false,
-                                  );
-                              final userId =
-                                  FirebaseAuth.instance.currentUser?.uid ?? '';
-                              final wishlistItem = WishlistItem(
-                                id: product.id,
-                                nameEn: product.title.en,
-                                nameAr: product.title.ar,
-                                imageUrl: product.mainImage,
-                                price: product.price,
-                              );
-                              wishlistCubit.addToWishlist(wishlistItem);
-                            },
+                    onPressed: () {
+                      if (isInWishlist) {
+                        wishlistCubit.removeFromWishlist(product.id);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Removed from wishlist'),
+                          ),
+                        );
+                      } else {
+                        final wishlistItem = WishlistItem(
+                          id: product.id,
+                          nameEn: product.title.en,
+                          nameAr: product.title.ar,
+                          imageUrl: product.mainImage,
+                          price: product.price,
+                        );
+                        wishlistCubit.addToWishlist(wishlistItem);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Added to wishlist')),
+                        );
+                      }
+                    },
                   );
                 },
               ),
+
               const SizedBox(width: 5),
               InkWell(
                 onTap: () {

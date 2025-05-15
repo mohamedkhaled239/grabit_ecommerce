@@ -9,12 +9,11 @@ import 'package:grabit_ecommerce/features/auth/model/auth_model.dart';
 import 'package:grabit_ecommerce/features/auth/model/register_model.dart';
 import 'package:grabit_ecommerce/features/auth/view/login_page.dart';
 import 'package:grabit_ecommerce/features/auth/view/register_page.dart';
-import 'package:grabit_ecommerce/features/cart/view/cart_screen.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_controller.dart';
 import 'package:grabit_ecommerce/features/home/model/home_model.dart';
 import 'package:grabit_ecommerce/features/home/search/view/search_page.dart';
 import 'package:grabit_ecommerce/features/home/view/home_page.dart';
-import 'package:grabit_ecommerce/features/home/view/least_arrival_widget.dart';
+import 'package:grabit_ecommerce/features/profile/controller/Locale_cubit.dart';
 import 'package:grabit_ecommerce/features/root_screen.dart';
 import 'package:grabit_ecommerce/features/cart/controller/cart_cubit.dart';
 import 'package:grabit_ecommerce/features/wishlist/controller/wishlist_cubit.dart';
@@ -24,7 +23,7 @@ import 'package:grabit_ecommerce/generated/l10n.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -34,15 +33,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => AuthController(AuthModel())),
-        BlocProvider(create: (context) => RegisterController(RegisterModel())),
+        BlocProvider(create: (_) => LocaleCubit()),
+        BlocProvider(create: (_) => AuthController(AuthModel())),
+        BlocProvider(create: (_) => RegisterController(RegisterModel())),
+        BlocProvider(create: (_) => HomeController(HomeModel())),
         BlocProvider(
-          create: (context) => HomeController(HomeModel()),
-          child: const LeastArrivalWidget(),
-        ),
-        BlocProvider(
-          create: (_) => CartCubit(FirebaseAuth.instance.currentUser!.uid),
-          child: CartScreen(),
+          create:
+              (_) => CartCubit(FirebaseAuth.instance.currentUser?.uid ?? ''),
         ),
         BlocProvider(
           create: (_) {
@@ -51,29 +48,32 @@ class MyApp extends StatelessWidget {
           },
         ),
       ],
-      child: MaterialApp(
-        locale: const Locale('ar', 'EG'),
-        localizationsDelegates: [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const AuthWrapper(),
-          '/login': (context) => const LoginPage(),
-          '/register': (context) => const RegisterScreen(),
-          '/home': (context) => const HomePage(),
-          '/root': (context) => const RootScreen(),
-          '/search': (context) => const SearchPage(),
+      child: BlocBuilder<LocaleCubit, Locale>(
+        builder: (context, locale) {
+          return MaterialApp(
+            locale: locale,
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            initialRoute: '/',
+            routes: {
+              '/': (context) => const AuthWrapper(),
+              '/login': (context) => const LoginPage(),
+              '/register': (context) => const RegisterScreen(),
+              '/home': (context) => const HomePage(),
+              '/root': (context) => const RootScreen(),
+              '/search': (context) => const SearchPage(),
+            },
+          );
         },
       ),
     );
