@@ -4,6 +4,7 @@ import 'package:grabit_ecommerce/core/widgets/custom_button.dart';
 import 'package:grabit_ecommerce/core/widgets/custom_text_field.dart';
 import 'package:grabit_ecommerce/features/auth/controller/auth_controller.dart';
 import 'package:grabit_ecommerce/features/auth/controller/auth_state.dart';
+import 'package:grabit_ecommerce/generated/l10n.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,14 +31,14 @@ class _LoginPageState extends State<LoginPage> {
             Image.asset('assets/images/logoapp.png', height: 200),
             CustomTextField(
               controller: _emailController,
-              hintText: 'Enter your email',
+              hintText: S.of(context).Enter_your_email,
               obscureText: false,
               prefixIcon: Icons.email_outlined,
               focusedBorderColor: Colors.deepPurple,
             ),
             CustomTextField(
               controller: _passwordController,
-              hintText: 'Enter your password',
+              hintText: S.of(context).Enter_your_password,
               obscureText: true,
               prefixIcon: Icons.lock_outline,
             ),
@@ -48,16 +49,21 @@ class _LoginPageState extends State<LoginPage> {
                 listener: (context, state) {
                   if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Login failed: ${state.error}')),
+                      SnackBar(
+                        content: Text(
+                          '${S.of(context).Login_failed} ${state.error}',
+                        ),
+                      ),
                     );
                   }
                   if (state is AuthSuccess) {
                     Navigator.pushNamed(context, '/root');
                   }
                 },
+
                 builder: (context, state) {
                   return CustomButton(
-                    text: 'Login',
+                    text: S.of(context).Login,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         context.read<AuthController>().login(
@@ -74,8 +80,8 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'don\'t have an account?',
+                Text(
+                  S.of(context).dont_have_an_account,
                   style: TextStyle(color: Colors.black),
                 ),
                 GestureDetector(
@@ -83,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pushNamed(context, '/register');
                   },
                   child: Text(
-                    '  Sign Up',
+                    S.of(context).Sign_Up,
                     style: TextStyle(color: Color(0xff1B0260).withOpacity(0.5)),
                   ),
                 ),
