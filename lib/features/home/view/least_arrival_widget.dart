@@ -23,22 +23,29 @@ class LeastArrivalWidget extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
+              print('Stream error: ${snapshot.error}');
+              return Center(child: Text('Error loading products'));
             }
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(child: Text('No Products Found'));
             }
 
+            // Add null check for each product
+            final validProducts =
+                snapshot.data!.where((p) => p != null).toList();
+            if (validProducts.isEmpty) {
+              return const Center(child: Text('No valid products found'));
+            }
+
             return Column(
               children: List.generate(
-                snapshot.data!.length,
+                validProducts.length,
                 (index) => Padding(
                   padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
                   child: SizedBox(
                     width: double.infinity,
-
                     child: LeastArrivalProductCard(
-                      product: snapshot.data![index],
+                      product: validProducts[index],
                     ),
                   ),
                 ),

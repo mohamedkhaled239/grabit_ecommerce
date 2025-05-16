@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grabit_ecommerce/features/home/products/model/product_model.dart';
 import 'package:grabit_ecommerce/features/home/controller/home_state.dart';
@@ -7,6 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class HomeController extends Cubit<HomeState> {
   final HomeModel _model;
   List<Product> _allProducts = [];
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // define _firestore
 
   HomeController(this._model) : super(HomeInitial()) {
     loadInitialData();
@@ -23,7 +27,28 @@ class HomeController extends Cubit<HomeState> {
   }
 
   Stream<List<Product>> getLatestProducts() {
-    return _model.getLatestProducts();
+    return _firestore
+        .collection('allproducts')
+        .orderBy('createdAt', descending: true)
+        .limit(20)
+        .snapshots()
+        .map((snapshot) {
+          print('Received ${snapshot.docs.length} products from Firestore');
+          return snapshot.docs
+              .map((doc) {
+                print('Processing product ${doc.id}');
+                try {
+                  return Product.fromFirestore(doc);
+                } catch (e, stack) {
+                  print('Error parsing document ${doc.id}: $e');
+                  print(stack);
+                  return null;
+                }
+              })
+              .where((product) => product != null)
+              .cast<Product>()
+              .toList();
+        });
   }
 
   List<Product> searchProducts(String query) {
