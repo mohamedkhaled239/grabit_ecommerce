@@ -4,7 +4,7 @@ import 'package:grabit_ecommerce/features/home/products/service/product_service.
 
 class HomeModel {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final ProductService _productService = ProductService();
+  final ProductService productService = ProductService();
 
   Stream<List<Product>> getLatestProducts() {
     return _firestore

@@ -89,6 +89,34 @@ class Product {
   factory Product.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
+    // Helper function to safely parse numbers
+    num parseNumber(dynamic value) {
+      if (value is num) return value;
+      if (value is String) return num.tryParse(value) ?? 0;
+      return 0;
+    }
+
+    // Helper function to extract category names
+    String getCategoryName(dynamic categoryData, String language) {
+      if (categoryData == null) return '';
+      if (categoryData is Map) {
+        final nameMap = categoryData['name'];
+        if (nameMap is Map) {
+          return nameMap[language]?.toString() ?? '';
+        }
+      }
+      return '';
+    }
+
+    // Helper function to get category ID
+    String getCategoryId(dynamic categoryData) {
+      if (categoryData == null) return '';
+      if (categoryData is Map) {
+        return categoryData['categoryId']?.toString() ?? '';
+      }
+      return categoryData.toString();
+    }
+
     final titleMap =
         data['title'] is Map ? data['title'] as Map<String, dynamic> : {};
     final descriptionMap =
@@ -97,8 +125,6 @@ class Product {
             : {};
 
     return Product(
-      categoryNameEn: data['categoryId']['name']['en']?.toString() ?? '',
-      categoryNameAr: data['categoryId']['name']['ar']?.toString() ?? '',
       id: doc.id,
       productId: data['productId']?.toString() ?? '',
       productType: data['productType']?.toString() ?? 'simple',
@@ -110,12 +136,15 @@ class Product {
         en: descriptionMap['en']?.toString() ?? '',
         ar: descriptionMap['ar']?.toString() ?? '',
       ),
-      price: (data['price'] as num?)?.toDouble() ?? 0.0,
-      discountPrice: (data['discountPrice'] as num?)?.toDouble(),
-      quantity: (data['quantity'] as num?)?.toInt() ?? 0,
+      price: parseNumber(data['price']).toDouble(),
+      discountPrice:
+          data['discountPrice'] != null
+              ? parseNumber(data['discountPrice']).toDouble()
+              : null,
+      quantity: parseNumber(data['quantity']).toInt(),
       sku: data['sku']?.toString() ?? '',
       brandId: data['brandId']?.toString() ?? '',
-      categoryId: data['categoryId']?.toString() ?? '',
+      categoryId: getCategoryId(data['categoryId']),
       subCategoryId: data['subCategoryId']?.toString() ?? '',
       mainImage: data['mainImage']?.toString() ?? '',
       images:
@@ -123,16 +152,18 @@ class Product {
       tags: (data['tags'] as List?)?.map((e) => e.toString()).toList() ?? [],
       vendorId: data['vendorId']?.toString() ?? '',
       ratingSummary: RatingSummary(
-        average: (data['ratingSummary']?['average'] as num?)?.toDouble() ?? 0.0,
-        count: (data['ratingSummary']?['count'] as num?)?.toInt() ?? 0,
+        average: parseNumber(data['ratingSummary']?['average']).toDouble(),
+        count: parseNumber(data['ratingSummary']?['count']).toInt(),
       ),
-      views: (data['views'] as num?)?.toInt() ?? 0,
-      soldCount: (data['soldCount'] as num?)?.toInt() ?? 0,
-      wishlistCount: (data['wishlistCount'] as num?)?.toInt() ?? 0,
-      trendingScore: (data['trendingScore'] as num?)?.toInt() ?? 0,
-      cartAdds: (data['cartAdds'] as num?)?.toInt() ?? 0,
+      views: parseNumber(data['views']).toInt(),
+      soldCount: parseNumber(data['soldCount']).toInt(),
+      wishlistCount: parseNumber(data['wishlistCount']).toInt(),
+      trendingScore: parseNumber(data['trendingScore']).toInt(),
+      cartAdds: parseNumber(data['cartAdds']).toInt(),
       createdAt: data['createdAt'] ?? Timestamp.now(),
       updatedAt: data['updatedAt'] ?? Timestamp.now(),
+      categoryNameEn: getCategoryName(data['categoryId'], 'en'),
+      categoryNameAr: getCategoryName(data['categoryId'], 'ar'),
     );
   }
 
