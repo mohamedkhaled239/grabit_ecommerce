@@ -19,8 +19,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: Form(
         key: _formKey,
         child: ListView(
@@ -33,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
               hintText: 'Enter your email',
               obscureText: false,
               prefixIcon: Icons.email_outlined,
-              focusedBorderColor: Colors.deepPurple,
+              focusedBorderColor: theme.colorScheme.primary,
             ),
             CustomTextField(
               controller: _passwordController,
@@ -48,7 +49,10 @@ class _LoginPageState extends State<LoginPage> {
                 listener: (context, state) {
                   if (state is AuthFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Login failed: ${state.error}')),
+                      SnackBar(
+                        content: Text('Login failed: ${state.error}'),
+                        backgroundColor: theme.colorScheme.error,
+                      ),
                     );
                   }
                   if (state is AuthSuccess) {
@@ -74,9 +78,9 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   'don\'t have an account?',
-                  style: TextStyle(color: Colors.black),
+                  style: theme.textTheme.bodyMedium,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -84,7 +88,9 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: Text(
                     '  Sign Up',
-                    style: TextStyle(color: Color(0xff1B0260).withOpacity(0.5)),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
                   ),
                 ),
               ],

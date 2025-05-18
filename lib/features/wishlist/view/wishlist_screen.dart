@@ -7,13 +7,18 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: const Color(0xFFF8F6FA),
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: BlocBuilder<WishlistCubit, WishlistState>(
           builder: (context, state) {
             if (state is WishlistLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                child: CircularProgressIndicator(
+                  color: theme.colorScheme.primary,
+                ),
+              );
             } else if (state is WishlistLoaded) {
               final wishlistCubit = context.read<WishlistCubit>();
               final items = state.items;
@@ -22,7 +27,9 @@ class WishlistScreen extends StatelessWidget {
                 return Center(
                   child: Text(
                     'Your wishlist is empty',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
                   ),
                 );
               }
@@ -35,6 +42,7 @@ class WishlistScreen extends StatelessWidget {
                   final item = items[index];
                   return Card(
                     elevation: 4,
+                    color: theme.cardColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),

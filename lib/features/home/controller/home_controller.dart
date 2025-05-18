@@ -14,7 +14,8 @@ class HomeController extends Cubit<HomeState> {
   Future<void> loadInitialData() async {
     emit(HomeLoading());
     try {
-      await _model.getLatestProducts().first;
+      final products = await _model.getLatestProducts().first;
+      _allProducts = products;
       emit(HomeLoaded('default-custom-id'));
     } catch (e) {
       emit(HomeError(e.toString()));

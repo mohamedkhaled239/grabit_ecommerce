@@ -15,14 +15,18 @@ class CategoryProductsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(categoryName),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        title: Text(
+          categoryName,
+          style: theme.textTheme.titleLarge,
+        ),
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        elevation: theme.appBarTheme.elevation ?? 0,
+        iconTheme: theme.appBarTheme.iconTheme,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: BlocBuilder<HomeController, HomeState>(
         builder: (context, state) {
           final productStream =
@@ -32,13 +36,29 @@ class CategoryProductsPage extends StatelessWidget {
             stream: productStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: theme.colorScheme.primary,
+                  ),
+                );
               }
               if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+                return Center(
+                  child: Text(
+                    'Error: ${snapshot.error}',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
+                );
               }
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No Products Found'));
+                return Center(
+                  child: Text(
+                    'No Products Found',
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                );
               }
 
               final categoryProducts =

@@ -41,12 +41,11 @@ class _SearchPageState extends State<SearchPage> {
       return;
     }
 
-    final results =
-        _allProducts.where((product) {
-          final titleLower = product.title.en.toLowerCase();
-          final searchLower = query.toLowerCase();
-          return titleLower.contains(searchLower);
-        }).toList();
+    final results = _allProducts.where((product) {
+      final titleLower = product.title.en.toLowerCase();
+      final searchLower = query.toLowerCase();
+      return titleLower.contains(searchLower);
+    }).toList();
 
     setState(() {
       _searchResults = results;
@@ -55,25 +54,32 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            // Custom search bar matching home page style
             Padding(
               padding: EdgeInsets.all(4.w),
               child: Container(
                 height: 7.h,
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
+                  color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey, width: 1.0),
+                  border: Border.all(
+                    color: theme.colorScheme.onSurface.withOpacity(0.2),
+                    width: 1.0,
+                  ),
                 ),
                 child: Row(
                   children: [
                     SizedBox(width: 3.w),
-                    const Icon(Icons.search, color: Color(0xff8391A1)),
+                    Icon(
+                      Icons.search,
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
                     SizedBox(width: 3.w),
                     Expanded(
                       child: TextField(
@@ -83,51 +89,57 @@ class _SearchPageState extends State<SearchPage> {
                           hintText: "Search Products...",
                           hintStyle: TextStyle(
                             fontSize: 16.sp,
-                            color: const Color(0xff8391A1),
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
                           ),
                           border: InputBorder.none,
                         ),
-                        style: TextStyle(fontSize: 16.sp, color: Colors.black),
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: theme.colorScheme.onSurface,
+                        ),
                         onChanged: _searchProducts,
                       ),
                     ),
                     if (_searchController.text.isNotEmpty)
                       IconButton(
-                        icon: const Icon(Icons.clear, color: Color(0xff8391A1)),
+                        icon: Icon(
+                          Icons.clear,
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
                         onPressed: () {
                           _searchController.clear();
                           _searchProducts('');
                         },
                       ),
-                    SizedBox(width: 3.w),
                   ],
                 ),
               ),
             ),
             Expanded(
-              child:
-                  _searchResults.isEmpty && _searchController.text.isNotEmpty
-                      ? const Center(
-                        child: Text(
-                          'No products found',
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
+              child: _searchResults.isEmpty && _searchController.text.isNotEmpty
+                  ? Center(
+                      child: Text(
+                        'No products found',
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
                         ),
-                      )
-                      : ListView.builder(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4.w,
-                          vertical: 2.h,
-                        ),
-                        itemCount: _searchResults.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 2.h),
-                            child: LeastArrivalProductCard(
-                              product: _searchResults[index],
-                            ),
-                          );
-                        },
                       ),
+                    )
+                  : ListView.builder(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.w,
+                        vertical: 2.h,
+                      ),
+                      itemCount: _searchResults.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 2.h),
+                          child: LeastArrivalProductCard(
+                            product: _searchResults[index],
+                          ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

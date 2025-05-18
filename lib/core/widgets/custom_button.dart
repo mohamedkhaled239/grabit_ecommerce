@@ -8,13 +8,14 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6.0),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: Color(0xFF5CAF90),
+          foregroundColor: theme.colorScheme.onPrimary,
+          backgroundColor: theme.colorScheme.primary,
           padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5.0),
@@ -22,7 +23,9 @@ class CustomButton extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

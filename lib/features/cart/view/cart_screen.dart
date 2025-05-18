@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grabit_ecommerce/features/cart/controller/cart_state.dart';
 import '../controller/cart_cubit.dart';
+import 'package:grabit_ecommerce/features/checkout/view/checkout_payment_page.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -118,7 +119,14 @@ class CartScreen extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const CheckoutPaymentPage(),
+                              ),
+                            );
+                          },
                           child: const Text('CHECKOUT'),
                         ),
                       ),

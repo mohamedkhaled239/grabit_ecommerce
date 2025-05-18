@@ -15,21 +15,38 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => HomeController(HomeModel()),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: SafeArea(
           child: BlocBuilder<HomeController, HomeState>(
             builder: (context, state) {
               if (state is HomeLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: theme.colorScheme.primary,
+                  ),
+                );
               } else if (state is HomeLoaded) {
                 return _HomePageContent(customId: state.customId);
               } else if (state is HomeError) {
-                return Center(child: Text(state.message));
+                return Center(
+                  child: Text(
+                    state.message,
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
+                );
               }
-              return const Center(child: Text('Unknown state'));
+              return Center(
+                child: Text(
+                  'Unknown state',
+                  style: theme.textTheme.bodyLarge,
+                ),
+              );
             },
           ),
         ),
